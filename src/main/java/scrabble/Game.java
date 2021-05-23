@@ -232,7 +232,7 @@ public class Game implements Runnable{
 				resetBoard(tempBoard, board);
 				
 				selectedLetter.setContent((char)(-1));
-				Player currPlayer = null; //opposite
+				Player currPlayer = null;
 				if (p1.isMyTurn()) currPlayer = p2;
 				if(p2.isMyTurn()) {
 					if(finalP != null) currPlayer = finalP;
@@ -309,7 +309,7 @@ public class Game implements Runnable{
 			public void actionPerformed(ActionEvent e) {		
 				resetBoard(tempBoard, board);
 				selectedLetter.setContent((char)(-1));
-				Player currPlayer = null; //opposite
+				Player currPlayer = null;
 				if (p1.isMyTurn()) currPlayer = p2;
 				if(p2.isMyTurn()) {
 					if(finalP != null) currPlayer = finalP;

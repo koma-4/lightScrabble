@@ -333,7 +333,7 @@ public class GameBoard extends JPanel {
 							break;
 						}
 					}
-				} else {                       //horizontal word
+				} else {
 					if (i == startIndex) {       //якорь - буква слева
 						if (i - 1 >= 0) {
 							Square s = board[startRow][i - 1];
