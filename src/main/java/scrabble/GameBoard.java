@@ -19,8 +19,9 @@ public class GameBoard extends JPanel {
 
 
 	public GameBoard(String dictionaryFile, LetterBag letterBag) {
+		String nameFile = "/Users/annakomno/IdeaProjects/lightScrabble" + dictionaryFile;
 
-		if (dictionaryFile == null || letterBag == null) {
+		if (nameFile == null || letterBag == null) {
 			JOptionPane.showMessageDialog(null, "File Not Found",
 					"Dictionary File Not Found", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
@@ -39,7 +40,7 @@ public class GameBoard extends JPanel {
 
 		//считывание словаря
 		try {
-			this.dict = new Game.Dictionary(new TokenScanner(new FileReader(dictionaryFile)));
+			this.dict = new Game.Dictionary(new TokenScanner(new FileReader(nameFile)));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "File Not Found",
 					"Dictionary File Not Found", JOptionPane.ERROR_MESSAGE);
@@ -77,12 +78,10 @@ public class GameBoard extends JPanel {
 
 		Collections.sort(sqs);
 
-
 		Square first = sqs.get(0);
 		int firstRow = first.getRow();
 		int firstCol = first.getColumn();
 		boolean sameRow = false;
-
 
 		Set<Integer> indices = new TreeSet<Integer>();
 		for (int i = 1; i < sqs.size(); i++) {
@@ -117,7 +116,6 @@ public class GameBoard extends JPanel {
 			}
 		}
 
-
 		//для слова из 2х букв
 		if (sqs.size() == 1) {
 			sameRow = true;
@@ -133,19 +131,9 @@ public class GameBoard extends JPanel {
 
 		//нужно, для начисления бонуса за нахождение в ячейке
 		int points = 0;
-		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
-				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
-				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
-				"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
-				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
-				"126", "128", "143", "1411");
-		ArrayList<String> bonus1 = new ArrayList<String>(list2);
-
 		Set<Integer> indicesNoPoints = new TreeSet<Integer>();
-
 		int bonus;
 		int wordBonus = 1;
-		String coord;
 
 		while (iter.hasNext()) {
 			index++;
@@ -159,22 +147,8 @@ public class GameBoard extends JPanel {
 							s.append(board[firstRow][previous + n].getContent());
 							indicesNoPoints.add(previous + n);
 
-							coord = (String.valueOf(firstRow) + String.valueOf(previous + n));
-							bonus = 1;
-							if (bonus1.contains(coord)) {
-								if (bonus1.indexOf(coord) < 8) {
-									wordBonus = wordBonus * 3;
-								}
-								if (bonus1.indexOf(coord) > 7 && bonus1.indexOf(coord) < 25) {
-									wordBonus = wordBonus * 2;
-								}
-								if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
-									if (wordBonus == 1) bonus = 3;
-								}
-								if (bonus1.indexOf(coord) > 36) {
-									if (wordBonus == 1) bonus = 2;
-								}
-							}
+							wordBonus = wordBonus * findWordBonus(firstRow, previous + n);
+							bonus = findBonus(firstRow, previous + n);
 							points = points +
 									bagOfTiles.getPointValue(board[firstRow][previous + n].getContent()) * bonus;
 						}
@@ -184,22 +158,8 @@ public class GameBoard extends JPanel {
 							s.append(board[previous + n][firstCol].getContent());
 							indicesNoPoints.add(previous + n);
 
-							coord = (String.valueOf(previous + n) + String.valueOf(firstCol));
-							bonus = 1;
-							if (bonus1.contains(coord)) {
-								if (bonus1.indexOf(coord) < 8) {
-									wordBonus = wordBonus * 3;
-								}
-								if (bonus1.indexOf(coord) > 7 && bonus1.indexOf(coord) < 25) {
-									wordBonus = wordBonus * 2;
-								}
-								if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
-									if (wordBonus == 1) bonus = 3;
-								}
-								if (bonus1.indexOf(coord) > 36) {
-									if (wordBonus == 1) bonus = 2;
-								}
-							}
+							wordBonus = wordBonus * findWordBonus(previous + n, firstCol);
+							bonus = findBonus(previous + n, firstCol);
 							points = points +
 									bagOfTiles.getPointValue(board[previous + n][firstCol].getContent()) * bonus;
 						}
@@ -210,35 +170,20 @@ public class GameBoard extends JPanel {
 				}
 			} else firstIndex = a;
 
-
 			s.append(sqs.get(index).getContent());
 			previous = a;
 
-
 			if (sameRow) {
-				coord = (String.valueOf(firstRow) + String.valueOf(a));
+				wordBonus = wordBonus * findWordBonus(firstRow, a);
+				bonus =  findBonus(firstRow, a);
 			} else {
-				coord = (String.valueOf(a) + String.valueOf(firstCol));
-			}
-			bonus = 1;
-			if (bonus1.contains(coord)) {
-				if (bonus1.indexOf(coord) < 8) {
-					wordBonus = wordBonus * 3;
-				}
-				if (bonus1.indexOf(coord) > 7 && bonus1.indexOf(coord) < 25) {
-					wordBonus = wordBonus * 2;
-				}
-				if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
-					bonus = 3;
-				}
-				if (bonus1.indexOf(coord) > 36) {
-					bonus = 2;
-				}
+				wordBonus = wordBonus * findWordBonus(a, firstCol);
+				bonus = findBonus(a, firstCol);
 			}
 			points = points + bagOfTiles.getPointValue(sqs.get(index).getContent()) * bonus;
 
 		}
-		points = points * wordBonus;
+		//points = points * wordBonus;
 
 
 		char[] asChar = s.toString().toCharArray();
@@ -250,20 +195,61 @@ public class GameBoard extends JPanel {
 		int startCol = (!sameRow) ? firstCol : firstIndex;
 
 
-		//вспомогательная функция
-		int result = addWordHelper(asChar, startRow, startCol, (!sameRow), firstTurn, indicesNoPoints);
+		//вспомогательный метод
+		int result = addWordHelper(asChar, startRow, startCol, (!sameRow), firstTurn, indicesNoPoints, points, wordBonus);
 
 		//добавление слова, подсчёт баллов
 		if (result > -1) {
 			addToBoard(sqs);
-			return points + result;
+			return result;
 
 		} else return -1;
 	}
 
+	private int findBonus(int row, int col) {
+		int bonus = 1;
+		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
+				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
+				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
+				"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
+				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
+				"126", "128", "143", "1411");
+		ArrayList<String> bonus1 = new ArrayList<String>(list2);
+		String coord = (String.valueOf(row) + String.valueOf(col));
+		if (bonus1.contains(coord)) {
+			if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
+				bonus = 3;
+			}
+			if (bonus1.indexOf(coord) > 36) {
+				bonus = 2;
+			}
+		}
+		return bonus;
+	}
 
-	private int addWordHelper(char[] word, int startRow, int startCol,
-							  boolean vertical, boolean firstTurn, Set<Integer> indicesNoPoints) {
+	private int findWordBonus(int row, int col) {
+		int wordBonus = 1;
+		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
+				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
+				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
+				"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
+				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
+				"126", "128", "143", "1411");
+		ArrayList<String> bonus1 = new ArrayList<String>(list2);
+		String coord = (String.valueOf(row) + String.valueOf(col));
+		if (bonus1.contains(coord)) {
+			if (bonus1.indexOf(coord) < 8) {
+				wordBonus = wordBonus * 3;
+			}
+			if (bonus1.indexOf(coord) > 7 && bonus1.indexOf(coord) < 25) {
+				wordBonus = wordBonus * 2;
+			}
+		}
+		return wordBonus;
+	}
+
+	private int addWordHelper(char[] word, int startRow, int startCol, boolean vertical, boolean firstTurn,
+							  Set<Integer> indicesNoPoints, int points, int wordBonus) {
 
 		int startIndex = (vertical) ? startRow : startCol;
 		int otherIndex = (!vertical) ? startRow : startCol;
@@ -382,15 +368,17 @@ public class GameBoard extends JPanel {
 
 		}
 		return findWordsToCheck(word, startRow,
-				startCol, vertical, indicesNoPoints);
+				startCol, vertical, indicesNoPoints, points, wordBonus);
 	}
 
 
-	private int findWordsToCheck(char[] word, int startRow,
-								 int startCol, boolean isVertical, Set<Integer> indicesNoPoints) {
+	private int findWordsToCheck(char[] word, int startRow, int startCol, boolean isVertical,
+								 Set<Integer> indicesNoPoints, int pointss, int wordBonuss) {
 
 
 		int points = 0;
+		int wordBonus = 1;
+		int bonus;
 
 		//слово по-вертикали
 		if (isVertical) {
@@ -429,7 +417,10 @@ public class GameBoard extends JPanel {
 				Square next = board[up][startCol];
 				if (next.hasContent()) {
 					vertical = next.getContent() + vertical;
-					points = points + getBonus(up, startCol, points);
+					wordBonus = wordBonus * findWordBonus(up, startCol);
+					bonus = findBonus(up, startCol);
+					points = points +
+							bagOfTiles.getPointValue(board[up][startCol].getContent()) * bonus;
 				} else break;
 			}
 
@@ -438,7 +429,10 @@ public class GameBoard extends JPanel {
 				Square next = board[up][startCol];
 				if (next.hasContent()) {
 					vertical += next.getContent();
-					points = points + getBonus(up, startCol, points);
+					wordBonus = wordBonus * findWordBonus(up, startCol);
+					bonus = findBonus(up, startCol);
+					points = points +
+							bagOfTiles.getPointValue(board[up][startCol].getContent()) * bonus;
 				} else break;
 			}
 			if (vertical.length() < 2 || !dict.isWord(vertical)) {
@@ -455,7 +449,10 @@ public class GameBoard extends JPanel {
 				Square next = board[startRow][side];
 				if (next.hasContent()) {
 					horizontal = next.getContent() + horizontal;
-					points = points + getBonus(startRow, side, points);
+					wordBonus = wordBonus * findWordBonus(startRow, side);
+					bonus = findBonus(startRow, side);
+					points = points +
+							bagOfTiles.getPointValue(board[startRow][side].getContent()) * bonus;
 				} else break;
 			}
 
@@ -463,7 +460,10 @@ public class GameBoard extends JPanel {
 			for (int side = startCol + word.length; side < 15; side++) {
 				Square next = board[startRow][side];
 				if (next.hasContent()) {
-					points = points + getBonus(startRow, side, points);
+					wordBonus = wordBonus * findWordBonus(startRow, side);
+					bonus = findBonus(startRow, side);
+					points = points +
+							bagOfTiles.getPointValue(board[startRow][side].getContent()) * bonus;
 					horizontal += next.getContent();
 				} else break;
 			}
@@ -501,36 +501,7 @@ public class GameBoard extends JPanel {
 
 
 		}
-		return points;
-
-	}
-
-	private int getBonus(int row, int col, int points) {
-		int wordBonus = 1;
-		int bonus = 1;
-		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
-				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
-				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
-				"513", "91", "95", "99", "913", "135", "139", "13", "111", "26", "28", "30", "37",
-				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
-				"126", "128", "143", "1411");
-		ArrayList<String> bonus1 = new ArrayList<String>(list2);
-		String coord = String.valueOf(row) + String.valueOf(col);
-		if (bonus1.contains(coord)) {
-			if (bonus1.indexOf(coord) < 8) {
-				wordBonus = wordBonus * 3;
-			}
-			if (bonus1.indexOf(coord) > 7 && bonus1.indexOf(coord) < 25) {
-				wordBonus = wordBonus * 2;
-			}
-			if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
-				if (wordBonus == 1) bonus = 3;
-			}
-			if (bonus1.indexOf(coord) > 36) {
-				if (wordBonus == 1) bonus = 2;
-			}
-		}
-		return (points + bagOfTiles.getPointValue(board[row][col].getContent()) * bonus) * wordBonus;
+		return (points + pointss) * wordBonus * wordBonuss;
 	}
 
 

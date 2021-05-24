@@ -6,11 +6,11 @@ import scrabble.*;
 
 public class GameBoardTest {
 
-    private final LetterBag letterBag = new LetterBag("/Users/annakomno/IdeaProjects/lightScrabble/src/main/letters.txt");
+    private final LetterBag letterBag = new LetterBag("/src/main/letters.txt");
 
     @Test
     public void testFirstWordNotInCenter() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 6, 'А'));
         sqs.add(new Square(8, 6, 'Т'));
@@ -19,7 +19,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordOneLetter() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 7, 'А'));
         assertEquals("Нет такого --> -1", -1, g.addWord(sqs, true));
@@ -28,7 +28,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordStartsInCenter() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 7, 'А'));
         sqs.add(new Square(7, 8, 'Д'));
@@ -37,7 +37,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordEndsInCenter() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 6, 'А'));
         sqs.add(new Square(7, 7, 'Д'));
@@ -46,7 +46,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordEndsInCenterColumns() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 7, 'А'));
         sqs.add(new Square(8, 7, 'Д'));
@@ -55,7 +55,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordMiddleInCenter() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(7, 6, 'Г'));
         sqs.add(new Square(7, 7, 'А'));
@@ -65,7 +65,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordMiddleInCenterColumns() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(6, 7, 'Г'));
         sqs.add(new Square(7, 7, 'А'));
@@ -75,7 +75,7 @@ public class GameBoardTest {
 
     @Test
     public void testFirstWordNotAWord() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs = new ArrayList<Square>();
         sqs.add(new Square(6, 7, 'Г'));
         sqs.add(new Square(7, 7, 'Д'));
@@ -85,7 +85,7 @@ public class GameBoardTest {
 
     @Test
     public void testSecondWordInvalidPlacement1() {   //нет такого слова
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs1 = new ArrayList<Square>();
         sqs1.add(new Square(6, 7, 'Г'));
         sqs1.add(new Square(7, 7, 'А'));
@@ -100,7 +100,7 @@ public class GameBoardTest {
 
     @Test
     public void testSecondWordInvalidPlacement2() {   //нет якоря
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs1 = new ArrayList<Square>();
         sqs1.add(new Square(6, 7, 'Г'));
         sqs1.add(new Square(7, 7, 'А'));
@@ -115,7 +115,7 @@ public class GameBoardTest {
 
     @Test
     public void testSecondWordValid() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs1 = new ArrayList<Square>();
         sqs1.add(new Square(6, 7, 'Г'));
         sqs1.add(new Square(7, 7, 'А'));
@@ -123,13 +123,13 @@ public class GameBoardTest {
         g.addWord(sqs1, true);
         ArrayList<Square> sqs2 = new ArrayList<Square>();
         sqs2.add(new Square(7, 8, 'Д'));
-        assertEquals(4, g.addWord(sqs2, false));
+        assertEquals(6, g.addWord(sqs2, false));
     }
 
 
     @Test
     public void testSecondWordCrossing() {
-        GameBoard g = new GameBoard("/Users/annakomno/IdeaProjects/lightScrabble/src/main/smallDictionary.txt", letterBag);
+        GameBoard g = new GameBoard("/src/main/smallDictionary.txt", letterBag);
         ArrayList<Square> sqs1 = new ArrayList<Square>();
         sqs1.add(new Square(6, 7, 'Д'));
         sqs1.add(new Square(8, 7, 'О'));

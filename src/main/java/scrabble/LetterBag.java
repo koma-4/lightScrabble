@@ -18,8 +18,9 @@ public class LetterBag {
 
 
     public LetterBag(String filename) {
+        String name = "/Users/annakomno/IdeaProjects/lightScrabble" + filename;
         try {
-            readFile(filename);
+            readFile(name);
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null,"File Not Found",
                     "Letters File Not Found", JOptionPane.ERROR_MESSAGE);
