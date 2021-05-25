@@ -58,8 +58,9 @@ public class Game implements Runnable{
 		else return tgt;
 	}
 
-	private String getNumberOfPlayers() {
-		String num = JOptionPane.showInputDialog(null, "Введите количество игроков одной цифрой(2-4):");
+	public static String getNumberOfPlayers() {
+		String num = JOptionPane.showInputDialog(null,
+				"Введите количество игроков одной цифрой(2-4):");
 		if (num.equals("2") || num.equals("3") || num.equals("4")) return num;
 		else return getNumberOfPlayers();
 	}
@@ -98,15 +99,15 @@ public class Game implements Runnable{
 	}
 
 
-	public JPanel inputImage() {
+	public static JPanel inputImage() {
 		try {
 			int scaledWidth = 5;
 			int scaledHeight = 2;
-			String inputImagePath = "/src/main/Scrabble-logo.png";
-			String absolutePath = "/Users/annakomno/IdeaProjects/lightScrabble" + inputImagePath;
-			Game.resize(absolutePath, scaledWidth, scaledHeight);
+			String inputImagePath = "src/main/resources/Scrabble-logo.png";
+			Game.class.getClassLoader().getResource(inputImagePath);
+			Game.resize(inputImagePath, scaledWidth, scaledHeight);
 
-			BufferedImage myPicture = ImageIO.read(new File(absolutePath));
+			BufferedImage myPicture = ImageIO.read(new File(inputImagePath));
 
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 			JPanel picPanel = new JPanel();
@@ -121,7 +122,8 @@ public class Game implements Runnable{
 
 		//инициализация игроков
 	    public void initializePlayers() {
-			final LetterBag letterBag = new LetterBag("/src/main/letters.txt");
+			Game.class.getClassLoader().getResource("src/main/resources/letters.txt");
+			final LetterBag letterBag = new LetterBag("src/main/resources/letters.txt");
 
 			final Player p1 = new Player(name1, letterBag.drawTiles(7), true);
 			final Player p2 = new Player(name2, letterBag.drawTiles(7), false);
@@ -167,8 +169,8 @@ public class Game implements Runnable{
 			if (p4 != null && p4.isMyTurn()) currPlayer = p4;
 			addToBoard(currPlayer, tileBenchPanel, selectedLetter);
 
-			final GameBoard board = new GameBoard("/src/main/russian.dictionary", letterBag);
-			final GameBoard tempBoard = new GameBoard("/src/main/russian.dictionary", letterBag);
+			final GameBoard board = new GameBoard("src/main/resources/russian.dictionary", letterBag);
+			final GameBoard tempBoard = new GameBoard("src/main/resources/russian.dictionary", letterBag);
 			Square[][] currBoard = tempBoard.getCurrentBoard();
 			for (Square[] squares : currBoard) {
 				for (final Square sq : squares) {
@@ -512,7 +514,7 @@ public class Game implements Runnable{
 			return gameButtonPanel;
 		}
 
-		public void addToBoard(Player currPlayer, JPanel tileBenchPanel, final Square selectedLetter) {
+		public static void addToBoard(Player currPlayer, JPanel tileBenchPanel, final Square selectedLetter) {
 			for (int i = 0; i < currPlayer.getBenchSize(); i++) {
 				char c = currPlayer.getLetter(i);
 				final JButton b = new JButton(Character.toString(c));

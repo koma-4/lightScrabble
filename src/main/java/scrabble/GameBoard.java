@@ -19,9 +19,8 @@ public class GameBoard extends JPanel {
 
 
 	public GameBoard(String dictionaryFile, LetterBag letterBag) {
-		String nameFile = "/Users/annakomno/IdeaProjects/lightScrabble" + dictionaryFile;
 
-		if (nameFile == null || letterBag == null) {
+		if (dictionaryFile == null || letterBag == null) {
 			JOptionPane.showMessageDialog(null, "File Not Found",
 					"Dictionary File Not Found", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
@@ -40,7 +39,7 @@ public class GameBoard extends JPanel {
 
 		//считывание словаря
 		try {
-			this.dict = new Game.Dictionary(new TokenScanner(new FileReader(nameFile)));
+			this.dict = new Game.Dictionary(new TokenScanner(new FileReader(dictionaryFile)));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "File Not Found",
 					"Dictionary File Not Found", JOptionPane.ERROR_MESSAGE);
@@ -206,15 +205,16 @@ public class GameBoard extends JPanel {
 		} else return -1;
 	}
 
+	List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
+			"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
+			"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
+			"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
+			"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
+			"126", "128", "143", "1411");
+	ArrayList<String> bonus1 = new ArrayList<String>(list2);
+
 	private int findBonus(int row, int col) {
 		int bonus = 1;
-		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
-				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
-				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
-				"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
-				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
-				"126", "128", "143", "1411");
-		ArrayList<String> bonus1 = new ArrayList<String>(list2);
 		String coord = (String.valueOf(row) + String.valueOf(col));
 		if (bonus1.contains(coord)) {
 			if (bonus1.indexOf(coord) > 24 && bonus1.indexOf(coord) < 37) {
@@ -229,13 +229,6 @@ public class GameBoard extends JPanel {
 
 	private int findWordBonus(int row, int col) {
 		int wordBonus = 1;
-		List<String> list2 = Arrays.asList("00", "07", "014", "70", "714", "140", "147", "1414",
-				"11", "22", "33", "44", "77", "212", "311", "410", "113", "104", "113",
-				"122", "131", "1010", "1111", "1212", "1313", "15", "19", "51", "55", "59",
-				"513", "91", "95", "99", "913", "135", "139", "03", "011", "26", "28", "30", "37",
-				"314", "62", "66", "68", "612", "73", "711", "82", "86", "88", "812", "110", "117", "1114",
-				"126", "128", "143", "1411");
-		ArrayList<String> bonus1 = new ArrayList<String>(list2);
 		String coord = (String.valueOf(row) + String.valueOf(col));
 		if (bonus1.contains(coord)) {
 			if (bonus1.indexOf(coord) < 8) {
